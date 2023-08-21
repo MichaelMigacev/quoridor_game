@@ -1,20 +1,20 @@
 import tkinter as tk
 
 class GUI:
-    def __init__(self, board):
+    def __init__(self, board, gamestate):
         # Create a new window
-        window = tk.Tk()
+        self.window = tk.Tk()
 
         # Set the window title
-        window.title("Quoridor DX")
+        self.window.title("Quoridor DX")
 
         # Set the window size
         self.canvas_width = 800
         self.canvas_height = 800
-        self.cell_size = self.canvas_height/10
+        self.cell_size = self.canvas_height/9
 
         # Create a canvas widget
-        self.canvas = tk.Canvas(window, width=self.canvas_width, height=self.canvas_height)
+        self.canvas = tk.Canvas(self.window, width=self.canvas_width, height=self.canvas_height)
         self.canvas.pack()
 
         board.be_cool()
@@ -22,7 +22,7 @@ class GUI:
         # Draw the game board on the canvas++
         self.draw_board(self.canvas, board)
         
-        window.mainloop()
+        #window.mainloop()
 
     def draw_board(self, canvas, board):
         self.canvas.delete("all")  # Clear the canvas
@@ -41,5 +41,17 @@ class GUI:
         self.canvas.pack()
         board.be_cool()
 
-    def update_gui(self, game_state):
-        pass
+    def get_input(self, current):
+        self.input = (7, 4)
+        return
+
+    def update_gui(self, board, game_state):
+        self.draw_board(self.canvas, board)
+        
+    def display_game_state(self, game_state):
+        print(f'Current Player is: Player {game_state.current_player.handle}')
+        if  game_state.current_player == game_state.player1:
+            print("Player 1's turn")
+        else:   
+            print("Player 2's turn")
+        return
