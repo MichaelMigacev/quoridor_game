@@ -15,15 +15,15 @@ def main():
     gui.window.mainloop()
 def play(board, game_state, gui):
     turns = 0
-    print(turns)
     while not game_state.is_game_over():
         turns += 1
-        print(turns)
+        print(f'It is now the turn number: {turns}')
         time.sleep(2)
+        gui.display_valid_moves(game_state.current_player)
         if turns == 2:
             break
         current_player = game_state.get_current_player()
-
+        current_player.get_valid_moves()
             # Display the current game state on the GUI
         gui.display_game_state(game_state)
         gui.get_input(current_player)

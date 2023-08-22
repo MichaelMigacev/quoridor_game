@@ -4,7 +4,7 @@ class GUI:
     def __init__(self, board, gamestate):
         # Create a new window
         self.window = tk.Tk()
-
+        self.window.geometry('1000x1000')
         # Set the window title
         self.window.title("Quoridor DX")
 
@@ -15,12 +15,10 @@ class GUI:
 
         # Create a canvas widget
         self.canvas = tk.Canvas(self.window, width=self.canvas_width, height=self.canvas_height)
-        self.canvas.pack()
-
-        board.be_cool()
-
+        self.canvas.pack(pady=50)
         # Draw the game board on the canvas++
         self.draw_board(self.canvas, board)
+        
         
         #window.mainloop()
 
@@ -39,7 +37,6 @@ class GUI:
                 y = i * self.cell_size
                 canvas.create_text(x + self.cell_size // 2, y + self.cell_size // 2, text=board.cells[i][j])
         self.canvas.pack()
-        board.be_cool()
 
     def get_input(self, current):
         self.input = (7, 4)
@@ -50,8 +47,6 @@ class GUI:
         
     def display_game_state(self, game_state):
         print(f'Current Player is: Player {game_state.current_player.handle}')
-        if  game_state.current_player == game_state.player1:
-            print("Player 1's turn")
-        else:   
-            print("Player 2's turn")
-        return
+    def display_valid_moves(self, player):
+        print(f'Valid moves: {player.get_valid_moves()}')
+        
