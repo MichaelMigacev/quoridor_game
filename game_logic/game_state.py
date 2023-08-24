@@ -4,6 +4,7 @@ class GameState():
         self.player1 = Player(handle=1, position=(8, 4), board=self.board)
         self.player2 = Player(handle=2, position=(0, 4), board=self.board) # change later to Bot class once available
         self.list_of_walls = []
+        self.list_of_blocked_moves = []
         self.current_player = self.player1
     def is_game_over(self):
         return False
@@ -28,7 +29,6 @@ class Player:
         self.walls = 10
     def move(self, input):
         self.input = input
-        print(input)
         self.board.cells[self.position[0]][self.position[1]] = 'E'
         self.position = input
         self.board.cells[self.input[0]][self.input[1]] = self.handle
@@ -41,10 +41,28 @@ class Player:
                 self.valid_moves.append(move)
         return self.valid_moves
 
-        
-
-        
-        
-        
-
-    
+class Wall:
+    def __init__(self, position, alignement, gamestate):
+        self.position = position
+        #True is vertical alignement
+        self.alignement = alignement
+        self.blocking_moves = self.blocks_moves()
+    def blocks_moves(self):
+        self.blocking_moves = []
+        if self.alignement:
+            self.blocking_moves.append(((self.position),(self.position[0]+1, self.position[1])))
+            self.blocking_moves.append(((self.position[0]+1, self.position[1]),(self.position)))
+            self.blocking_moves.append(((self.position[0], self.position[1]+1),(self.position[0]+1, self.position[1]+1)))
+            self.blocking_moves.append(((self.position[0]+1, self.position[1]+1),(self.position[0], self.position[1]+1)))
+        else:
+            self.blocking_moves.append(((self.position),(self.position[0], self.position[1]+1)))
+            self.blocking_moves.append(((self.position[0], self.position[1]+1),(self.position)))
+            self.blocking_moves.append(((self.position[0]+1, self.position[1]),(self.position[0]+1, self.position[1]+1)))
+            self.blocking_moves.append(((self.position[0]+1, self.position[1]+1),(self.position[0]+1, self.position[1])))
+        return self.blocking_moves
+    def is_wall_valid(self, gamestate):
+        if self.position in gamestate.list_of_walls:
+            return False
+        for blocked_move in self.blocking_moves:
+            if blocked_move in gamestate.list_of_blocked_moves:
+                return False

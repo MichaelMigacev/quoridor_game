@@ -12,14 +12,14 @@ def main():
     gui = GUI(board, game_state)
     game_thread = threading.Thread(target=play, args=(board, game_state, gui))
     game_thread.start()
-    gui.window.mainloop()
+    gui.root.mainloop()
 def play(board, game_state, gui):
     turns = 0
     while not game_state.is_game_over():
         turns += 1
         print(f'It is now the turn number: {turns}')
         time.sleep(2)
-        gui.display_valid_moves(game_state.current_player)
+        gui.display_valid_moves(game_state.current_player, board, game_state)
         if turns == 2:
             break
         current_player = game_state.get_current_player()
