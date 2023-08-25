@@ -42,7 +42,7 @@ class Player:
         return self.valid_moves
 
 class Wall:
-    def __init__(self, position, alignement, gamestate):
+    def __init__(self, position, alignement):
         self.position = position
         #True is vertical alignement
         self.alignement = alignement
@@ -61,8 +61,10 @@ class Wall:
             self.blocking_moves.append(((self.position[0]+1, self.position[1]+1),(self.position[0]+1, self.position[1])))
         return self.blocking_moves
     def is_wall_valid(self, gamestate):
-        if self.position in gamestate.list_of_walls:
-            return False
+        for wall in gamestate.list_of_walls:
+            if self.position == wall.position:
+                return False
         for blocked_move in self.blocking_moves:
             if blocked_move in gamestate.list_of_blocked_moves:
                 return False
+            

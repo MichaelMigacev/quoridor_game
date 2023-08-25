@@ -32,7 +32,7 @@ class GUI:
                 cell_widget.grid_propagate(False)
                 if isinstance(board.cells[i][j], int):
                     button = tk.Button(cell_widget, text=str(board.cells[i][j]))
-                    button.grid()
+                    button.place(relx=1, rely=1, anchor="center", bordermode='inside')
                 elif board.cells[i][j] == 'E':
                     image_label = tk.Label(cell_widget, text='E')
                     image_label.grid()
