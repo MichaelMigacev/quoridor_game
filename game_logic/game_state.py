@@ -20,6 +20,7 @@ class GameState():
     def update_game_state(self, move):
         self.current_player.move(move)
         pass
+    
 class Player:
     def __init__(self, handle, position, board):
         self.board = board
