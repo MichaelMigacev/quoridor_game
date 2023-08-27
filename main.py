@@ -3,16 +3,13 @@ from ai.ai import *
 from game_logic.board import Board
 from game_logic.game_state import *
 import time
-import threading
 
 
 def main():
     board = Board(width=9, height=9)
     game_state = GameState(board)
     gui = GUI(board, game_state)
-    game_thread = threading.Thread(target=play, args=(board, game_state, gui))
-    game_thread.start()
-    gui.root.mainloop()
+    play(board, game_state, gui)
 def play(board, game_state, gui):
     turns = 0
     while not game_state.is_game_over():
