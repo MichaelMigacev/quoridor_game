@@ -44,6 +44,7 @@ class GUI:
                     self.grid.blit(text_surface, text_rect)
                 if i <= 7 and j <= 7:
                     button_rect = pygame.Rect(j * self.cell_size + self.cell_size * 0.6, i * self.cell_size + self.cell_size * 0.6, self.cell_size * 0.5, self.cell_size * 0.5)
+                    
                     pygame.draw.rect(self.grid, (0, 0, 255), button_rect)
                     font = pygame.font.Font(None, 36)
                     text_surface = font.render('W', True, (0, 0, 0))
@@ -79,6 +80,63 @@ class GUI:
             board.cells[player.get_valid_moves()[length][0]][player.get_valid_moves()[length][1]] = 'V'
         self.draw_board(board, gamestate)
 
-class Wall_Button:
-    def __init__(self, x, y, width=50, height=50, buttonText='B', onclickFunction=None, onePress=False):
+class Wall_Button():
+    def __init__(self, rect, color):
+        self.rect = pygame.Rect(rect)
+        self.color = color
+        self.hover_effect = False
+
+    def check_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.on_click(event)
+
+    def on_click(self):
+        self.function()
+
+    def function(self):
+        pass
+
+class Move_Button():
+    def __init__(self, rect, color):
+        self.rect = pygame.Rect(rect)
+        self.color = color
+        self.hover_effect = True
+
+    def check_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.on_click(event)
+
+    def on_click(self):
+        self.function()
+
+    def check_hover(self):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if self.hover_effect:
+                pass
+
+    def function(self):
+        pass
+
+class Submit_Button():
+    def __init__(self, rect, color):
+        self.rect = pygame.Rect(rect)
+        self.color = color
+        self.hover_effect = True
+
+    def check_event(self, event):
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.on_release(event)
+
+    def on_release(self):
+        self.function()
+
+    def check_hover(self):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if self.hover_effect:
+                pass
+    
+    def function(self):
         pass
