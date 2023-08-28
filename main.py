@@ -15,10 +15,7 @@ def play(board, game_state, gui):
     while not game_state.is_game_over():
         turns += 1
         print(f'It is now the turn number: {turns}')
-        time.sleep(2)
         gui.display_valid_moves(game_state.current_player, board, game_state)
-        if turns == 2:
-            break
         current_player = game_state.get_current_player()
         current_player.get_valid_moves()
             # Display the current game state on the GUI
@@ -33,7 +30,9 @@ def play(board, game_state, gui):
             print('Oopsie Whoopsie, we have done a fucky wucky! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
             # Switch turns for the next iteration
         game_state.switch_turns()
-        gui.update_gui(board, game_state)
+        gui.draw_board(board, game_state)
+        if turns == 3:
+            break
             
     return
 
