@@ -20,10 +20,11 @@ class GUI:
         self.grid_rect = self.grid.get_rect(topleft=(0, 0))
 
         self.draw_board(board, gamestate)
-        
+        self.draw_buttons()
+        self.submit_button = Submit_Button(self.screen, (0, 800, 800, 100), (0, 255, 0))
+
 
     def draw_board(self, board, gamestate):
-        self.buttons = []
         self.grid.fill((255, 255, 255))  # Fill grid with white
         for i in range(board.width):
             for j in range(board.width):
@@ -46,34 +47,51 @@ class GUI:
                     text_surface = font.render(str(board.cells[i][j]), True, (0, 0, 0))
                     text_rect = text_surface.get_rect(center=cell_rect.center)
                     self.grid.blit(text_surface, text_rect)
+                
+        
+        
+        self.screen.blit(self.grid, self.grid_rect)
+        pygame.display.flip()
+
+    def draw_buttons(self):
+        self.wall_buttons = []
+        for i in range(self.board.width):
+            for j in range(self.board.width):
                 if i <= 7 and j <= 7:
                     wall_button = Wall_Button(self.grid, (j * self.cell_size + self.cell_size * 0.6, i * self.cell_size + self.cell_size * 0.6, self.cell_size * 0.5, self.cell_size * 0.5), (0, 0, 255), (i, j))
-                    self.buttons.append(wall_button)
-
-        submit_button = Submit_Button(self.screen, (0, 800, 800, 100), (0, 255, 0))
-        self.buttons.append(submit_button)
-
-        #self.screen.fill((0, 0, 0))  # Fill screen with black
+                    self.wall_buttons.append(wall_button)
         self.screen.blit(self.grid, self.grid_rect)
         pygame.display.flip()
 
     def update_gui(self, board, game_state):
-        for button in self.buttons:
-            pygame.draw.rect(self.grid, button.color, button.rect)
+        buttons_on_2 = 0
+        buttons_with_input = 0
+        for button in self.wall_buttons:
+            if button.output == 2:
+                buttons_on_2 += 1
+            if button.output == 1 or button.output == 0:
+                buttons_with_input += 1
+            button.update()
+        if buttons_on_2 == len(self.wall_buttons) or buttons_with_input > 1:
+            self.draw_board(board, game_state)
+            self.draw_buttons()
+        self.submit_button.update()
 
         self.screen.blit(self.grid, self.grid_rect)
         pygame.display.flip()
 
     def get_input(self, current):
-        print('input wait')
+        self.draw_buttons()
         while True:
             for event in pygame.event.get():
-                for button in self.buttons:
+                for button in self.wall_buttons:
                     button.check_event(event)
-                    if button.output == 'submit':
-                        self.input = (7,4)
-                        print(self.input)
-                        return
+                self.submit_button.check_event(event)
+                if self.submit_button.output == 'submit':
+                    self.input = (7,4)
+                    print(self.input)
+                    self.submit_button.reset()
+                    return
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
@@ -95,8 +113,7 @@ class Wall_Button():
         self.color = color
         self.hover_effect = False
         self.place = place
-        self.output = ''
-        pygame.draw.rect(grid, color, rect)
+        self.output = 2
 
     def check_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -107,8 +124,19 @@ class Wall_Button():
         self.function()
 
     def function(self):
-        print(self.place)
-        self.color = (255, 0, 0)
+        self.output = (self.output + 1) % 3
+        print(self.output)
+        
+    def update(self):
+        if self.output == 0:
+            self.color = (0, 0, 255)
+            pygame.draw.rect(self.grid, self.color, self.rect)
+        elif self.output == 1:
+            self.color = (255, 0, 0)
+            pygame.draw.rect(self.grid, self.color, self.rect)
+
+        
+
 
 class Move_Button():
     def __init__(self, grid, rect, color):
@@ -136,7 +164,6 @@ class Submit_Button():
     def __init__(self, screen, rect, color):
         self.rect = pygame.Rect(rect)
         self.color = color
-        self.hover_effect = True
         self.screen = screen
         pygame.draw.rect(screen, color, rect)
         self.output = ''
@@ -145,17 +172,24 @@ class Submit_Button():
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.on_release()
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.on_click()
 
     def on_release(self):
         self.function()
 
-    def check_hover(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            if self.hover_effect:
-                self.color = (10, 20, 10)
-                time.sleep(0.1)
-                self.color(0, 255, 0)
+    def on_click(self):
+        self.color = (10, 200, 10)
     
     def function(self):
         self.output = 'submit'
         print('submit')
+
+    def reset(self):
+        self.color = (0, 255, 0)
+        self.output = ''
+
+    def update(self):
+        pygame.draw.rect(self.screen, self.color, self.rect)
+        
