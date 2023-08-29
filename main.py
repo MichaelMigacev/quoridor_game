@@ -15,22 +15,21 @@ def play(board, game_state, gui):
     while not game_state.is_game_over():
         turns += 1
         print(f'It is now the turn number: {turns}')
-        gui.display_valid_moves(game_state.current_player, board, game_state)
         current_player = game_state.get_current_player()
-        current_player.get_valid_moves()
-            # Display the current game state on the GUI
+        current_player.get_valid_moves(board, game_state)
+
         gui.display_game_state(game_state)
         gui.get_input(current_player)
 
-                # Check if the move is valid
-        if game_state.is_valid_move(current_player, gui.input):
-                    # Update game state based on the move
-            game_state.update_game_state(gui.input)
-        else:
+        while not game_state.is_valid_move(current_player, gui.input):
             print('Oopsie Whoopsie, we have done a fucky wucky! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
+            print('Please repeat your input.')
+            gui.get_input(current_player)
+        game_state.update_game_state(gui.input)
             # Switch turns for the next iteration
         game_state.switch_turns()
         gui.draw_board(board, game_state)
+        board.clear_board()
         if turns == 3:
             break
             
