@@ -109,6 +109,22 @@ class GUI:
     
     def display_game_state(self, game_state):
         print(f'Current Player is: Player {game_state.current_player.handle}')
+    
+    def display_winner(self, winner):
+        winning_message = 'Player ' + str(winner.handle) + ' won!!!'
+        font = pygame.font.Font(None, 100)
+        text_surface = font.render(winning_message, True, (129, 176, 48))
+        text_rect = text_surface.get_rect(center=(self.grid_width // 2, self.grid_height // 2))
+        self.grid.blit(text_surface, text_rect)
+        self.screen.blit(self.grid, self.grid_rect)
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+        
+
 
 
 class Wall_Button():

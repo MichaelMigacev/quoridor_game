@@ -27,18 +27,16 @@ def play(board, game_state, gui):
             gui.get_input(current_player)
         game_state.update_game_state(gui.input)
             # Switch turns for the next iteration
+        if game_state.is_game_over():
+            break
         game_state.switch_turns()
         gui.draw_board(board, game_state)
         board.clear_board()
-        if turns == 3:
+        if game_state.is_game_over():
             break
-            
-    return
-
-
-        # Game over: Determine and display the winner
-    winner = game_state.get_winner()
-    gui.display_winner(winner)
+    
+    board.clear_board()
+    gui.display_winner(current_player)
 
         #kriege input von gui spieler 2 """
 

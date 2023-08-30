@@ -7,7 +7,14 @@ class GameState():
         self.list_of_blocked_moves = []
         self.current_player = self.player1
     def is_game_over(self):
-        return False
+        if self.current_player.handle == 1:
+            if self.current_player.position[0] == 0:
+                return True
+        elif self.current_player.handle == 2:
+            if self.current_player.position[0] == 8:
+                return True
+        else:
+            return False
     def get_current_player(self):
         return self.current_player
     def switch_turns(self):
