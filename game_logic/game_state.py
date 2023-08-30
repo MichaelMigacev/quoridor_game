@@ -1,3 +1,4 @@
+from collections import deque
 class GameState():
     def __init__(self, board):
         self.board = board
@@ -6,6 +7,7 @@ class GameState():
         self.list_of_walls = []
         self.list_of_blocked_moves = []
         self.current_player = self.player1
+        self.other_player = self.player2
     def is_game_over(self):
         if self.current_player.handle == 1:
             if self.current_player.position[0] == 0:
@@ -20,17 +22,36 @@ class GameState():
     def switch_turns(self):
         if self.get_current_player() == self.player1:
             self.current_player = self.player2
+            self.other_player = self.player1
         elif self.get_current_player() == self.player2:
             self.current_player = self.player1
+            self.other_player = self.player2
     def is_valid_move(self, current_player, move):
         if move[2] == 'move':
             return True
         elif move[2] == 'wall':
             wall = Wall(move[0], move[1])
-            if wall.is_valid(self) == True:
+            if wall.is_valid(self) == True and self.check_reachability(current_player, wall) and self.check_reachability(self.other_player, wall):
                 return True
             else:
                 return False
+    def check_reachability(self, player, wall):
+        start_row = 0 if player.handle == 2 else 8
+        visited = set()
+        queue = deque([(start_row, col) for col in range(self.board.width)])
+        while queue:
+            row, col = queue.popleft()
+            if (row, col) == player.position:
+                return True
+            if (row, col) not in visited:
+                visited.add((row, col))
+                directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Right, Down, Left, Up
+                for dr, dc in directions:
+                    new_row, new_col = row + dr, col + dc
+                    if self.board.valid_position(new_row) and self.board.valid_position(new_col):
+                        if ((row, col), (new_row, new_col)) not in self.list_of_blocked_moves and (new_row, new_col) not in visited and ((row, col), (new_row, new_col)) not in wall.blocking_moves:
+                            queue.append((new_row, new_col))
+        return False
     def update_game_state(self, move):
         if move[2] == 'move':
             self.current_player.move(move)
@@ -39,8 +60,6 @@ class GameState():
             self.list_of_walls.append(wall)
             for move in wall.blocking_moves:
                 self.list_of_blocked_moves.append(move)
-            print(wall.alignement)
-            print(self.list_of_blocked_moves)
             
     
 class Player:
@@ -78,7 +97,6 @@ class Player:
                                             self.valid_moves.append(direction2(move))
         for moves in self.valid_moves:
             board.cells[moves[0]][moves[1]] = 'V'
-        print(self.valid_moves)
         return self.valid_moves
     def left(self, position):
         left = (position[0], position[1] - 1)

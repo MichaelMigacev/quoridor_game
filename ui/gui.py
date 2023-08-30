@@ -34,10 +34,6 @@ class GUI:
                 horz_wall_rect = pygame.Rect(j * self.cell_size, i * self.cell_size + self.cell_size - self.border, self.cell_size * 1.8, self.border)
                 if board.cells[i][j] == 'E':
                     pygame.draw.rect(self.grid, (202, 204, 219), cell_rect)
-                    """ font = pygame.font.Font(None, 36)
-                    text_surface = font.render('E', True, (0, 0, 0))
-                    text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect) """
                 elif board.cells[i][j] == 'V':
                     pygame.draw.rect(self.grid, (163, 194, 163), cell_rect)
                 elif isinstance(board.cells[i][j], int):
@@ -96,7 +92,6 @@ class GUI:
                     for button in self.buttons:
                         if button.output != 2:
                             self.input = [button.place, button.output, button.type]
-                    print(self.input)
                     self.submit_button.reset()
                     if self.input == []:
                         print('There was no input')
@@ -106,9 +101,6 @@ class GUI:
                     pygame.quit()
                     sys.exit()
                 self.update_gui(self.board, self.gamestate)
-    
-    def display_game_state(self, game_state):
-        print(f'Current Player is: Player {game_state.current_player.handle}')
     
     def display_winner(self, winner):
         winning_message = 'Player ' + str(winner.handle) + ' won!!!'
@@ -213,7 +205,6 @@ class Submit_Button():
     
     def function(self):
         self.output = 'submit'
-        print('submit')
 
     def reset(self):
         self.color = (186, 52, 63)

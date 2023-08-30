@@ -11,18 +11,12 @@ def main():
     gui = GUI(board, game_state)
     play(board, game_state, gui)
 def play(board, game_state, gui):
-    turns = 0
     while not game_state.is_game_over():
-        turns += 1
-        print(f'It is now the turn number: {turns}')
         current_player = game_state.get_current_player()
         current_player.get_valid_moves(board, game_state)
-
-        gui.display_game_state(game_state)
         gui.get_input(current_player)
 
         while not game_state.is_valid_move(current_player, gui.input):
-            print('Oopsie Whoopsie, we have done a fucky wucky! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧')
             print('Please repeat your input.')
             gui.get_input(current_player)
         game_state.update_game_state(gui.input)
