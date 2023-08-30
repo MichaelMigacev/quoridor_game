@@ -6,47 +6,48 @@ class GUI:
     def __init__(self, board, gamestate):
         pygame.init()
         self.running = True
-        self.screen = pygame.display.set_mode((800, 900))
-        pygame.display.set_caption("Quoridor DX")
-
         self.grid_width = 800
         self.grid_height = 800
         self.cell_size = self.grid_height / 9
+        self.border = self.cell_size * 0.2
+
+        self.screen = pygame.display.set_mode((800 - self.border, 900 - self.border))
+        pygame.display.set_caption("Quoridor DX")
 
         self.board = board
         self.gamestate = gamestate
 
-        self.grid = pygame.Surface((self.grid_width, self.grid_height))
+        self.grid = pygame.Surface((self.grid_width - self.border, self.grid_height - self.border))
         self.grid_rect = self.grid.get_rect(topleft=(0, 0))
 
         self.draw_board(board, gamestate)
         self.draw_buttons()
-        self.submit_button = Submit_Button(self.screen, (0, 800, 800, 100), (0, 255, 0))
+        self.submit_button = Submit_Button(self.screen, (0, 800 - self.border, 800 - self.border, 100), (186, 52, 63))
 
 
     def draw_board(self, board, gamestate):
-        self.grid.fill((255, 255, 255))  # Fill grid with white
+        self.grid.fill((135, 137, 153))  # Fill grid with white
         for i in range(board.width):
             for j in range(board.width):
-                cell_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size)
+                cell_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size * 0.8, self.cell_size * 0.8)
                 if board.cells[i][j] == 'E':
-                    pygame.draw.rect(self.grid, (0, 255, 0), cell_rect, 3)
-                    font = pygame.font.Font(None, 36)
+                    pygame.draw.rect(self.grid, (202, 204, 219), cell_rect)
+                    """ font = pygame.font.Font(None, 36)
                     text_surface = font.render('E', True, (0, 0, 0))
                     text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect)
+                    self.grid.blit(text_surface, text_rect) """
                 elif board.cells[i][j] == 'V':
-                    pygame.draw.rect(self.grid, (0, 255, 0), cell_rect, 3)
-                    font = pygame.font.Font(None, 36)
+                    pygame.draw.rect(self.grid, (163, 194, 163), cell_rect)
+                    """ font = pygame.font.Font(None, 36)
                     text_surface = font.render('V', True, (0, 0, 0))
                     text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect)
+                    self.grid.blit(text_surface, text_rect) """
                 elif isinstance(board.cells[i][j], int):
-                    pygame.draw.rect(self.grid, (0, 255, 0), cell_rect, 3)
-                    font = pygame.font.Font(None, 36)
+                    pygame.draw.rect(self.grid, (166* (board.cells[i][j] - 1), 90, 161 ), cell_rect)
+                    """ font = pygame.font.Font(None, 36)
                     text_surface = font.render(str(board.cells[i][j]), True, (0, 0, 0))
                     text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect)
+                    self.grid.blit(text_surface, text_rect) """
                 
         
         
@@ -58,10 +59,10 @@ class GUI:
         for i in range(self.board.width):
             for j in range(self.board.width):
                 if i <= 7 and j <= 7:
-                    wall_button = Wall_Button(self.grid, (j * self.cell_size + self.cell_size * 0.75, i * self.cell_size + self.cell_size * 0.75, self.cell_size * 0.5, self.cell_size * 0.5), (0, 0, 255), (i, j))
+                    wall_button = Wall_Button(self.grid, (j * self.cell_size + self.cell_size * 0.6, i * self.cell_size + self.cell_size * 0.6, self.cell_size * 0.5, self.cell_size * 0.5), (0, 0, 255), (i, j))
                     self.buttons.append(wall_button)
                 if self.board.cells[i][j] == 'V':
-                    move_button = Move_Button(self.grid, (j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size), (30, 30, 100), (i, j))
+                    move_button = Move_Button(self.grid, (j * self.cell_size, i * self.cell_size, self.cell_size * 0.8, self.cell_size * 0.8), (30, 30, 100), (i, j))
                     self.buttons.append(move_button)
         self.screen.blit(self.grid, self.grid_rect)
         pygame.display.flip()
@@ -191,14 +192,14 @@ class Submit_Button():
         self.function()
 
     def on_click(self):
-        self.color = (10, 200, 10)
+        self.color = (130, 40, 48)
     
     def function(self):
         self.output = 'submit'
         print('submit')
 
     def reset(self):
-        self.color = (0, 255, 0)
+        self.color = (186, 52, 63)
         self.output = ''
 
     def update(self):
