@@ -13,5 +13,7 @@ class Board:
             for j in range(self.width):
                 if self.cells[i][j] == 'V':
                     self.cells[i][j] = 'E'
+    
+    
 
 

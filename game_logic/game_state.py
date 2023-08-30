@@ -57,14 +57,41 @@ class Player:
         self.board.cells[self.input[0][0]][self.input[0][1]] = self.handle
     def get_valid_moves(self, board, gamestate):
         self.valid_moves = []
-        hypothetical_moves = [(self.position[0]-1, self.position[1]),(self.position[0]+1, self.position[1]),\
-                              (self.position[0], self.position[1]-1),(self.position[0], self.position[1]+1)]
+        hypothetical_moves = [self.left(self.position),self.right(self.position),\
+                              self.up(self.position),self.down(self.position)]
         for move in hypothetical_moves:
-            if self.board.valid_position(move[0]) and self.board.valid_position(move[1]) and (self.position, move) not in gamestate.list_of_blocked_moves:
-                self.valid_moves.append(move)
+            if self.board.valid_position(move[0]) and self.board.valid_position(move[1]):
+                if (self.position, move) not in gamestate.list_of_blocked_moves:
+                    if self.board.cells[move[0]][move[1]] == 'E':
+                        self.valid_moves.append(move)
+                        continue
+                    elif isinstance(self.board.cells[move[0]][move[1]], int):
+                        directions = [self.left, self.right, self.up, self.down]
+                        for direction in directions:
+                            if move == direction(self.position):
+                                if (move, direction(move)) not in gamestate.list_of_blocked_moves:
+                                    self.valid_moves.append(direction(move))
+                                    break
+                                else:
+                                    for direction2 in directions:
+                                        if direction(move) != direction2(move) and direction2(move) != self.position and (move, direction2(move)) not in gamestate.list_of_blocked_moves:
+                                            self.valid_moves.append(direction2(move))
         for moves in self.valid_moves:
             board.cells[moves[0]][moves[1]] = 'V'
+        print(self.valid_moves)
         return self.valid_moves
+    def left(self, position):
+        left = (position[0], position[1] - 1)
+        return left
+    def right(self, position):
+        left = (position[0], position[1] + 1)
+        return left
+    def up(self, position):
+        left = (position[0] - 1, position[1])
+        return left
+    def down(self, position):
+        left = (position[0] + 1, position[1])
+        return left
 
 class Wall:
     def __init__(self, position, alignement):
