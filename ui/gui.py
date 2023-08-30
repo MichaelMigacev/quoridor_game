@@ -26,10 +26,12 @@ class GUI:
 
 
     def draw_board(self, board, gamestate):
-        self.grid.fill((135, 137, 153))  # Fill grid with white
+        self.grid.fill((135, 137, 153))
         for i in range(board.width):
             for j in range(board.width):
                 cell_rect = pygame.Rect(j * self.cell_size, i * self.cell_size, self.cell_size * 0.8, self.cell_size * 0.8)
+                vert_wall_rect = pygame.Rect(j * self.cell_size + self.cell_size - self.border, i * self.cell_size, self.border, self.cell_size * 1.8)
+                horz_wall_rect = pygame.Rect(j * self.cell_size, i * self.cell_size + self.cell_size - self.border, self.cell_size * 1.8, self.border)
                 if board.cells[i][j] == 'E':
                     pygame.draw.rect(self.grid, (202, 204, 219), cell_rect)
                     """ font = pygame.font.Font(None, 36)
@@ -38,16 +40,14 @@ class GUI:
                     self.grid.blit(text_surface, text_rect) """
                 elif board.cells[i][j] == 'V':
                     pygame.draw.rect(self.grid, (163, 194, 163), cell_rect)
-                    """ font = pygame.font.Font(None, 36)
-                    text_surface = font.render('V', True, (0, 0, 0))
-                    text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect) """
                 elif isinstance(board.cells[i][j], int):
                     pygame.draw.rect(self.grid, (166* (board.cells[i][j] - 1), 90, 161 ), cell_rect)
-                    """ font = pygame.font.Font(None, 36)
-                    text_surface = font.render(str(board.cells[i][j]), True, (0, 0, 0))
-                    text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.grid.blit(text_surface, text_rect) """
+                for wall in gamestate.list_of_walls:
+                    if wall.position == (i, j):
+                        if wall.alignement == True:
+                            pygame.draw.rect(self.grid, (42, 35, 51), vert_wall_rect)
+                        else:
+                            pygame.draw.rect(self.grid, (42, 35, 51), horz_wall_rect)
                 
         
         
@@ -135,10 +135,11 @@ class Wall_Button():
     def update(self):
         if self.output == 0:
             self.color = (0, 0, 255)
-            pygame.draw.rect(self.grid, self.color, self.rect)
+            pygame.draw.rect(self.grid, self.color, (self.rect[0] - 53, self.rect[1] + 18, 160, 18))
         elif self.output == 1:
             self.color = (255, 0, 0)
-            pygame.draw.rect(self.grid, self.color, self.rect)
+            pygame.draw.rect(self.grid, (135, 137, 153), (self.rect[0] - 53, self.rect[1] + 18, 160, 18))
+            pygame.draw.rect(self.grid, self.color, (self.rect[0] + 18, self.rect[1] - 53, 18, 160))
 
 
 class Move_Button():
